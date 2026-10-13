@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f7f4">
+  <title>Protótipos | Oficina Rota 27</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #172727;
+      --muted: #667574;
+      --line: #dce5e0;
+      --paper: #f5f7f4;
+      --surface: #fff;
+      --teal: #087c70;
+      --teal-dark: #075e56;
+      --lime: #c8eb69;
+      --coral: #dd5b45;
+      --yellow: #f2cf59;
+      --green-bg: #e1f3e9;
+      --green-ink: #176c45;
+      --yellow-bg: #fff4c9;
+      --yellow-ink: #725400;
+      --red-bg: #fde5df;
+      --red-ink: #a33826;
+      --shadow: 0 16px 48px rgb(23 39 39 / 7%);
+      font-family: "DM Sans", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; color: var(--ink); background: var(--paper); }
+    button, input, select, textarea { font: inherit; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    button { color: inherit; }
+    button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+      outline: 3px solid #087c70;
+      outline-offset: 3px;
+    }
+    .skip-link { position: fixed; z-index: 20; top: 8px; left: 8px; padding: 12px 16px; color: white; background: #172727; transform: translateY(-150%); }
+    .skip-link:focus { transform: translateY(0); }
+    .shell { min-height: 100vh; }
+    .topbar { height: 72px; display: flex; align-items: center; gap: 24px; padding: 0 4.2vw; background: var(--surface); border-bottom: 1px solid var(--line); }
+    .brand { display: flex; align-items: center; gap: 11px; min-width: 205px; }
+    .brand-mark { width: 38px; height: 38px; display: grid; place-items: center; background: var(--ink); color: var(--lime); border-radius: 11px 11px 11px 3px; font: 700 14px "IBM Plex Mono", monospace; }
+    .brand-copy { display: grid; gap: 1px; }
+    .brand-copy strong { font: 700 15px "Space Grotesk", sans-serif; }
+    .brand-copy span { color: var(--muted); font-size: 11px; }
+    .top-context { color: var(--muted); font: 500 11px "IBM Plex Mono", monospace; letter-spacing: .04em; text-transform: uppercase; }
+    .top-actions { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    .avatar { width: 35px; height: 35px; display: grid; place-items: center; color: #fff; background: #b65c42; border-radius: 50%; font-size: 12px; font-weight: 700; }
+    .profile { display: grid; gap: 1px; font-size: 12px; }
+    .profile span { color: var(--muted); font-size: 11px; }
+    .prototype-head { max-width: 1460px; margin: 0 auto; padding: 32px 34px 20px; }
+    .eyebrow { margin: 0 0 8px; color: var(--teal-dark); font: 600 11px "IBM Plex Mono", monospace; letter-spacing: .06em; text-transform: uppercase; }
+    h1 { margin: 0; font: 600 clamp(25px, 3vw, 34px)/1.1 "Space Grotesk", sans-serif; letter-spacing: 0; }
+    .intro { max-width: 730px; margin: 8px 0 20px; color: var(--muted); font-size: 14px; line-height: 1.55; }
+    .tabs { display: flex; gap: 7px; overflow-x: auto; padding: 4px 2px 10px; scrollbar-width: thin; }
+    .tab { flex: 0 0 auto; min-height: 44px; padding: 0 15px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); cursor: pointer; font-size: 13px; font-weight: 600; }
+    .tab[aria-selected="true"] { color: white; background: var(--ink); border-color: var(--ink); }
+    .tab small { margin-right: 8px; color: var(--teal); font: 600 11px "IBM Plex Mono", monospace; }
+    .tab[aria-selected="true"] small { color: var(--lime); }
+    main { max-width: 1460px; margin: 0 auto; padding: 0 34px 44px; }
+    .prototype[hidden] { display: none; }
+    .workspace { display: grid; grid-template-columns: 218px minmax(0, 1fr); min-height: 620px; overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: 13px; box-shadow: var(--shadow); }
+    .sidebar { padding: 22px 14px; background: #f8faf8; border-right: 1px solid var(--line); }
+    .side-label { margin: 0 10px 12px; color: #81908e; font: 500 10px "IBM Plex Mono", monospace; letter-spacing: .08em; text-transform: uppercase; }
+    .side-nav { display: grid; gap: 4px; }
+    .side-nav a { min-height: 42px; display: flex; align-items: center; gap: 11px; padding: 0 10px; color: #536461; border-radius: 7px; text-decoration: none; font-size: 13px; font-weight: 500; }
+    .side-nav a[aria-current="page"] { color: var(--teal-dark); background: #e5f2ee; font-weight: 700; }
+    .nav-glyph { width: 22px; color: #78908b; font: 500 12px "IBM Plex Mono", monospace; text-align: center; }
+    .side-nav a[aria-current="page"] .nav-glyph { color: var(--teal); }
+    .sidebar-note { margin: 28px 7px 0; padding: 14px 12px; background: #edf2ec; border-radius: 8px; }
+    .sidebar-note strong { font: 600 12px "Space Grotesk", sans-serif; }
+    .sidebar-note p { margin: 5px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
+    .content { min-width: 0; padding: 27px 30px 30px; }
+    .content-top { display: flex; align-items: center; gap: 18px; margin-bottom: 23px; }
+    .page-title { min-width: 0; }
+    .page-title p { margin: 0 0 4px; color: var(--muted); font-size: 12px; }
+    .page-title h2 { margin: 0; font: 600 24px "Space Grotesk", sans-serif; }
+    .toolbar { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+    .search { width: min(230px, 24vw); height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 7px; color: var(--ink); background: var(--surface); font-size: 12px; }
+    .button { min-height: 40px; display: inline-flex; align-items: center; justify-content: center; padding: 0 13px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface); cursor: pointer; font-size: 12px; font-weight: 700; text-decoration: none; white-space: nowrap; }
+    .button:hover { background: #f1f6f2; }
+    .button-primary { color: #fff; background: var(--teal-dark); border-color: var(--teal-dark); }
+    .button-primary:hover { background: #064c46; }
+    .button-quiet { border-color: transparent; background: transparent; color: var(--teal-dark); }
+    .day-switch { display: flex; align-items: center; gap: 4px; }
+    .day-switch button { width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 7px; background: white; cursor: pointer; font-size: 16px; }
+    .day-switch strong { min-width: 94px; text-align: center; font: 500 11px "IBM Plex Mono", monospace; }
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 22px; }
+    .stat { padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; background: white; }
+    .stat span { display: block; color: var(--muted); font-size: 11px; }
+    .stat strong { display: block; margin-top: 4px; font: 600 22px "Space Grotesk", sans-serif; }
+    .stat .mini-note { display: inline; margin-left: 6px; color: var(--teal-dark); font: 500 10px "IBM Plex Mono", monospace; }
+    .section-heading { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; font: 600 16px "Space Grotesk", sans-serif; }
+    .count { min-width: 23px; height: 23px; display: inline-grid; place-items: center; padding: 0 5px; color: var(--yellow-ink); background: var(--yellow-bg); border-radius: 50%; font: 600 11px "IBM Plex Mono", monospace; }
+    .split { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(240px, .8fr); gap: 20px; }
+    .queue { display: grid; gap: 10px; }
+    .request { padding: 15px; border: 1px solid var(--line); border-left: 4px solid var(--yellow); border-radius: 8px; background: white; }
+    .request-top { display: flex; align-items: center; gap: 10px; }
+    .time { color: var(--ink); font: 600 12px "IBM Plex Mono", monospace; }
+    .status { display: inline-flex; align-items: center; gap: 6px; min-height: 25px; padding: 0 9px; border-radius: 100px; font-size: 10px; font-weight: 700; }
+    .status::before { content: ""; width: 7px; height: 7px; flex: 0 0 7px; border-radius: 50%; background: currentColor; }
+    .status-pending { color: var(--yellow-ink); background: var(--yellow-bg); }
+    .status-confirmed { color: var(--green-ink); background: var(--green-bg); }
+    .status-cancelled { color: var(--red-ink); background: var(--red-bg); }
+    .request h4 { margin: 12px 0 3px; font: 600 15px "Space Grotesk", sans-serif; }
+    .request .vehicle { margin: 0; color: var(--muted); font-size: 12px; }
+    .request .complaint { margin: 11px 0 13px; padding-top: 10px; border-top: 1px solid #edf1ee; color: #344744; font-size: 12px; line-height: 1.45; }
+    .request-actions { display: flex; gap: 7px; flex-wrap: wrap; }
+    .request-actions .button { min-height: 35px; font-size: 11px; }
+    .day-panel { padding: 15px; background: #f7faf8; border: 1px solid var(--line); border-radius: 8px; }
+    .day-panel h3 { margin: 0 0 4px; font: 600 15px "Space Grotesk", sans-serif; }
+    .day-panel > p { margin: 0 0 16px; color: var(--muted); font-size: 11px; }
+    .timeline { display: grid; }
+    .timeline-item { display: grid; grid-template-columns: 48px 13px 1fr; gap: 9px; min-height: 59px; }
+    .timeline-time { padding-top: 1px; color: var(--muted); font: 500 10px "IBM Plex Mono", monospace; }
+    .timeline-marker { position: relative; display: flex; justify-content: center; }
+    .timeline-marker::before { content: ""; width: 9px; height: 9px; margin-top: 3px; border: 2px solid var(--teal); border-radius: 50%; background: white; }
+    .timeline-marker::after { content: ""; position: absolute; top: 14px; bottom: -2px; width: 1px; background: var(--line); }
+    .timeline-item:last-child .timeline-marker::after { display: none; }
+    .timeline-label { font-size: 11px; font-weight: 700; }
+    .timeline-detail { margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .section-caption { margin: 18px 0 0; color: var(--muted); font-size: 11px; }
+
+    /* Protótipo 2: leitura linear, controles amplos e contraste elevado. */
+    .prototype-accessible { --ink: #101d20; --muted: #3f5152; --line: #8b9b9a; --paper: #f1f5f4; --teal: #005b54; --teal-dark: #004c46; --yellow-bg: #fff0a8; --yellow-ink: #473600; --green-bg: #d6f3e2; --green-ink: #064b2d; --red-bg: #ffe1dc; --red-ink: #861e10; }
+    .prototype-accessible .workspace { border-radius: 4px; box-shadow: none; }
+    .prototype-accessible .content { padding: 30px 34px; }
+    .prototype-accessible .page-title h2 { font-size: 28px; }
+    .prototype-accessible .search { width: 255px; height: 46px; font-size: 14px; }
+    .prototype-accessible .button { min-height: 46px; padding: 0 16px; font-size: 14px; }
+    .prototype-accessible .request { border-left-width: 6px; border-radius: 4px; }
+    .prototype-accessible .request h4 { font-size: 17px; }
+    .prototype-accessible .request .vehicle, .prototype-accessible .request .complaint { font-size: 14px; }
+    .prototype-accessible .status { min-height: 30px; font-size: 12px; }
+    .prototype-accessible .stats { gap: 14px; }
+    .prototype-accessible .stat { border-radius: 4px; }
+    .prototype-accessible .stat span { font-size: 13px; }
+    .prototype-accessible .day-panel { background: white; border-radius: 4px; }
+    .prototype-accessible .timeline-time, .prototype-accessible .timeline-detail { color: #3f5152; font-size: 12px; }
+
+    /* Protótipo 3: quadro de recepção com trilha horária e sinais visuais. */
+    .prototype-board { --ink: #1e2926; --muted: #66706c; --line: #d6d9cf; --paper: #f3f3eb; --teal: #24685c; --teal-dark: #1e554b; --lime: #d4ed6b; --coral: #d4563d; }
+    .prototype-board .workspace { grid-template-columns: 76px minmax(0, 1fr); border-radius: 4px; box-shadow: 0 15px 45px rgb(32 43 37 / 12%); }
+    .prototype-board .sidebar { padding: 20px 10px; background: #1e2926; border: 0; }
+    .prototype-board .side-label, .prototype-board .sidebar-note { display: none; }
+    .prototype-board .side-nav a { min-height: 48px; justify-content: center; padding: 0; color: #b5c1bc; font-size: 0; }
+    .prototype-board .side-nav a[aria-current="page"] { color: #1e2926; background: var(--lime); }
+    .prototype-board .nav-glyph { color: inherit; font-size: 12px; }
+    .prototype-board .content { padding: 24px 30px 30px; }
+    .prototype-board .content-top { align-items: end; }
+    .prototype-board .page-title h2 { font-size: 29px; }
+    .prototype-board .stats { grid-template-columns: 1.2fr 1fr 1fr; gap: 0; border-block: 1px solid var(--line); }
+    .prototype-board .stat { border: 0; border-radius: 0; background: transparent; padding: 13px 16px; }
+    .prototype-board .stat + .stat { border-left: 1px solid var(--line); }
+    .prototype-board .stat strong { font-size: 25px; }
+    .board-layout { display: grid; grid-template-columns: minmax(0, 1fr) 250px; gap: 24px; }
+    .arrival-board { display: grid; grid-template-columns: 54px minmax(0, 1fr); }
+    .arrival-time { padding: 17px 6px 0 0; color: var(--muted); font: 500 11px "IBM Plex Mono", monospace; text-align: right; }
+    .arrival-slot { min-height: 75px; padding: 12px 14px; border-top: 1px solid var(--line); border-left: 2px solid #96bdb0; }
+    .arrival-slot.pending-slot { border-left-color: var(--coral); background: #fff7f2; }
+    .arrival-slot.confirmed-slot { border-left-color: var(--teal); background: #f1f8f4; }
+    .slot-line { display: flex; align-items: center; gap: 8px; }
+    .slot-line strong { font: 600 14px "Space Grotesk", sans-serif; }
+    .slot-meta { margin: 5px 0 8px; color: var(--muted); font-size: 11px; }
+    .arrival-slot .button { min-height: 32px; padding: 0 10px; font-size: 11px; }
+    .visual-note { align-self: start; overflow: hidden; background: #1e2926; color: white; }
+    .visual-note img { width: 100%; height: 148px; display: block; object-fit: cover; }
+    .visual-copy { padding: 15px; }
+    .visual-copy span { color: var(--lime); font: 500 10px "IBM Plex Mono", monospace; text-transform: uppercase; }
+    .visual-copy h3 { margin: 7px 0 6px; font: 600 17px "Space Grotesk", sans-serif; }
+    .visual-copy p { margin: 0; color: #d0dad3; font-size: 12px; line-height: 1.5; }
+    .visual-copy .button { margin-top: 12px; color: var(--ink); background: var(--lime); border-color: var(--lime); }
+
+    .prototype-caption { display: flex; gap: 12px; align-items: flex-start; margin: 15px 2px 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .prototype-caption strong { flex: 0 0 auto; color: var(--ink); }
+    .prototype-caption span { max-width: 840px; }
+    .toast { position: fixed; z-index: 30; right: 22px; bottom: 22px; max-width: min(380px, calc(100vw - 32px)); padding: 13px 17px; color: white; background: #172727; border-left: 4px solid var(--lime); border-radius: 5px; box-shadow: var(--shadow); font-size: 13px; }
+    .toast[hidden] { display: none; }
+    dialog { width: min(510px, calc(100vw - 28px)); padding: 0; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); box-shadow: 0 24px 90px rgb(0 0 0 / 30%); }
+    dialog::backdrop { background: rgb(12 25 24 / 55%); }
+    .dialog-head { display: flex; align-items: start; justify-content: space-between; padding: 19px 21px 12px; border-bottom: 1px solid var(--line); }
+    .dialog-head h2 { margin: 0; font: 600 19px "Space Grotesk", sans-serif; }
+    .dialog-head p { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+    .dialog-close { width: 38px; height: 38px; border: 1px solid var(--line); border-radius: 6px; background: white; cursor: pointer; }
+    .dialog-form { display: grid; gap: 13px; padding: 17px 21px 20px; }
+    .field { display: grid; gap: 5px; }
+    .field label { font-size: 12px; font-weight: 700; }
+    .field input, .field textarea { width: 100%; min-height: 42px; padding: 9px 11px; border: 1px solid #aab9b4; border-radius: 6px; color: var(--ink); background: white; }
+    .field textarea { min-height: 78px; resize: vertical; }
+    .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 5px; }
+    .demo-disclaimer { max-width: 1460px; margin: -28px auto 30px; padding: 0 34px; color: var(--muted); font-size: 11px; }
+
+    @media (max-width: 1060px) {
+      .workspace { grid-template-columns: 175px minmax(0, 1fr); }
+      .content { padding: 24px 20px; }
+      .split { grid-template-columns: minmax(0, 1fr); }
+      .day-panel { display: none; }
+      .prototype-board .workspace { grid-template-columns: 64px minmax(0, 1fr); }
+      .prototype-board .board-layout { grid-template-columns: minmax(0, 1fr) 210px; }
+    }
+    @media (max-width: 720px) {
+      .topbar { height: 62px; padding: 0 16px; }
+      .brand { min-width: 0; }
+      .top-context, .profile { display: none; }
+      .prototype-head { padding: 26px 16px 14px; }
+      .intro { margin-bottom: 15px; font-size: 13px; }
+      main { padding: 0 12px 34px; }
+      .workspace, .prototype-board .workspace { display: block; min-height: unset; }
+      .sidebar { display: none; }
+      .content, .prototype-accessible .content, .prototype-board .content { padding: 20px 15px 22px; }
+      .content-top { display: grid; align-items: start; gap: 13px; margin-bottom: 17px; }
+      .toolbar { width: 100%; margin: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; }
+      .toolbar .search { width: 100%; min-width: 0; }
+      .toolbar .day-switch { grid-column: 1 / -1; grid-row: 2; justify-content: space-between; }
+      .toolbar > .button-primary { grid-column: 2; grid-row: 1; }
+      .stats, .prototype-board .stats { gap: 6px; }
+      .stat, .prototype-accessible .stat, .prototype-board .stat { padding: 10px 8px; }
+      .stat strong, .prototype-board .stat strong { font-size: 18px; }
+      .stat span, .prototype-accessible .stat span { font-size: 10px; line-height: 1.3; }
+      .stat .mini-note { display: block; margin: 3px 0 0; }
+      .request { padding: 13px 12px; }
+      .request-actions .button { flex: 1; }
+      .prototype-caption { display: grid; gap: 3px; margin-inline: 4px; }
+      .prototype-board .content-top { display: grid; }
+      .prototype-board .toolbar { display: grid; }
+      .prototype-board .board-layout { grid-template-columns: minmax(0, 1fr); }
+      .prototype-board .visual-note { display: grid; grid-template-columns: 120px minmax(0, 1fr); }
+      .prototype-board .visual-note img { height: 100%; min-height: 150px; }
+      .prototype-board .arrival-board { grid-template-columns: 46px minmax(0, 1fr); }
+      .arrival-slot { padding: 11px 9px; }
+      .slot-line { flex-wrap: wrap; }
+      .demo-disclaimer { margin: -20px auto 24px; padding: 0 16px; }
+    }
+    @media (max-width: 380px) {
+      .brand-copy strong { font-size: 13px; }
+      .avatar { width: 32px; height: 32px; }
+      .button { padding-inline: 10px; }
+      .day-switch strong { min-width: 76px; font-size: 10px; }
+      .status { padding-inline: 7px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para os protótipos</a>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand" aria-label="Oficina Rota 27">
+        <span class="brand-mark" aria-hidden="true">27</span>
+        <span class="brand-copy"><strong>Oficina Rota 27</strong><span>Gestão de serviços</span></span>
+      </div>
+      <span class="top-context">protótipos de interface / gestão de oficina</span>
+      <div class="top-actions">
+        <div class="avatar" aria-hidden="true">AM</div>
+        <div class="profile"><strong>Ana Martins</strong><span>Gestora</span></div>
+      </div>
+    </header>
+
+    <div class="prototype-head">
+      <p class="eyebrow">Painel de especialistas · 3 alternativas</p>
+      <h1>Escolha como a oficina enxerga o dia.</h1>
+      <p class="intro">Três propostas para a mesma operação. Alterne entre elas; os pedidos de horário são demonstrações e só ficam confirmados após a ação da oficina.</p>
+      <div class="tabs" role="tablist" aria-label="Alternativas de interface">
+        <button class="tab" id="tab-fila" type="button" role="tab" aria-selected="true" aria-controls="proto-fila"><small>01</small>Decisões primeiro</button>
+        <button class="tab" id="tab-acessivel" type="button" role="tab" aria-selected="false" aria-controls="proto-acessivel" tabindex="-1"><small>02</small>Agenda clara</button>
+        <button class="tab" id="tab-quadro" type="button" role="tab" aria-selected="false" aria-controls="proto-quadro" tabindex="-1"><small>03</small>Quadro da recepção</button>
+      </div>
+    </div>
+
+    <main id="conteudo">
+      <section class="prototype" id="proto-fila" role="tabpanel" aria-labelledby="tab-fila" tabindex="0">
+        <div class="workspace">
+          <aside class="sidebar" aria-label="Navegação principal">
+            <p class="side-label">Oficina</p>
+            <nav class="side-nav">
+              <a href="#agenda" aria-current="page"><span class="nav-glyph" aria-hidden="true">01</span>Agenda</a>
+              <a href="#atendimentos"><span class="nav-glyph" aria-hidden="true">02</span>Atendimentos</a>
+              <a href="#pecas"><span class="nav-glyph" aria-hidden="true">03</span>Peças e vendas</a>
+              <a href="#clientes"><span class="nav-glyph" aria-hidden="true">04</span>Clientes</a>
+            </nav>
+            <div class="sidebar-note"><strong>Próximo passo</strong><p>Revise os pedidos pendentes antes de receber os veículos.</p></div>
+          </aside>
+          <div class="content">
+            <div class="content-top">
+              <div class="page-title"><p>Terça-feira, 13 de outubro</p><h2>Agenda da oficina</h2></div>
+              <div class="toolbar">
+                <label class="sr-only" for="search-fila">Buscar por cliente, placa ou serviço</label>
+                <input class="search" id="search-fila" data-search type="search" placeholder="Cliente, placa ou serviço">
+                <button class="button button-primary" type="button" data-new-request>Novo pedido</button>
+                <div class="day-switch" aria-label="Selecionar dia"><button type="button" aria-label="Dia anterior" data-day="prev">‹</button><strong>13 out · terça</strong><button type="button" aria-label="Próximo dia" data-day="next">›</button></div>
+              </div>
+            </div>
+            <div class="stats" aria-label="Resumo do dia">
+              <div class="stat"><span>Aguardando confirmação</span><strong data-pending-count>02</strong></div>
+              <div class="stat"><span>Horários confirmados</span><strong data-confirmed-count>08</strong></div>
+              <div class="stat"><span>Chegadas previstas</span><strong>10 <span class="mini-note">hoje</span></strong></div>
+            </div>
+            <div class="split">
+              <section aria-labelledby="queue-title">
+                <h3 class="section-heading" id="queue-title">Precisa de uma decisão <span class="count" data-pending-badge>2</span></h3>
+                <div class="queue" data-list>
+                  <article class="request" data-status="Pendente" data-search-text="Mariana Costa Chevrolet Onix RKU4H28 revisão ruído freio">
+                    <div class="request-top"><span class="time">09:30</span><span class="status status-pending">Pendente de confirmação</span></div>
+                    <h4>Mariana Costa</h4><p class="vehicle">Chevrolet Onix · RKU4H28</p>
+                    <p class="complaint">“Quero fazer a revisão e ouvir um ruído ao frear.”</p>
+                    <div class="request-actions"><button class="button button-primary" type="button" data-confirm>Confirmar horário</button><button class="button" type="button" data-suggest>Sugerir outro</button></div>
+                  </article>
+                  <article class="request" data-status="Pendente" data-search-text="Paulo Nunes Fiat Argo SJV8A11 troca de óleo filtro">
+                    <div class="request-top"><span class="time">11:00</span><span class="status status-pending">Pendente de confirmação</span></div>
+                    <h4>Paulo Nunes</h4><p class="vehicle">Fiat Argo · SJV8A11</p>
+                    <p class="complaint">“Troca de óleo e filtro. Posso deixar o carro pela manhã?”</p>
+                    <div class="request-actions"><button class="button button-primary" type="button" data-confirm>Confirmar horário</button><button class="button" type="button" data-suggest>Sugerir outro</button></div>
+                  </article>
+                </div>
+              </section>
+              <aside class="day-panel" aria-label="Horários confirmados de hoje">
+                <h3>O restante do dia</h3><p>Chegadas já confirmadas</p>
+                <div class="timeline">
+                  <div class="timeline-item"><span class="timeline-time">08:30</span><span class="timeline-marker" aria-hidden="true"></span><div><div class="timeline-label">Marcos Azevedo</div><div class="timeline-detail">Toyota Corolla · Confirmado</div></div></div>
+                  <div class="timeline-item"><span class="timeline-time">13:00</span><span class="timeline-marker" aria-hidden="true"></span><div><div class="timeline-label">Joana Ribeiro</div><div class="timeline-detail">VW Polo · Confirmado</div></div></div>
+                  <div class="timeline-item"><span class="timeline-time">15:30</span><span class="timeline-marker" aria-hidden="true"></span><div><div class="timeline-label">Rafael Souza</div><div class="timeline-detail">Honda Fit · Confirmado</div></div></div>
+                </div>
+              </aside>
+            </div>
+            <p class="section-caption">Pedidos aguardam a equipe. A confirmação é enviada manualmente pelo WhatsApp.</p>
+          </div>
+        </div>
+        <div class="prototype-caption"><strong>Direção UX</strong><span>Fila de decisões em primeiro plano; agenda confirmada ao lado. Boa para reduzir o risco de deixar pedidos sem resposta.</span></div>
+      </section>
+
+      <section class="prototype prototype-accessible" id="proto-acessivel" role="tabpanel" aria-labelledby="tab-acessivel" tabindex="0" hidden>
+        <div class="workspace">
+          <aside class="sidebar" aria-label="Navegação principal">
+            <p class="side-label">Oficina</p>
+            <nav class="side-nav">
+              <a href="#agenda-clara" aria-current="page"><span class="nav-glyph" aria-hidden="true">01</span>Agenda</a>
+              <a href="#atendimentos"><span class="nav-glyph" aria-hidden="true">02</span>Atendimentos</a>
+              <a href="#pecas"><span class="nav-glyph" aria-hidden="true">03</span>Peças e vendas</a>
+              <a href="#clientes"><span class="nav-glyph" aria-hidden="true">04</span>Clientes</a>
+            </nav>
+            <div class="sidebar-note"><strong>Ajuda rápida</strong><p>Pedidos pendentes precisam de confirmação da equipe.</p></div>
+          </aside>
+          <div class="content">
+            <div class="content-top">
+                <div class="page-title"><p>Terça-feira, 13 de outubro</p><h2>Agenda</h2></div>
+              <div class="toolbar">
+                <label class="sr-only" for="search-acessivel">Buscar por cliente, placa ou serviço</label>
+                <input class="search" id="search-acessivel" data-search type="search" placeholder="Buscar cliente ou placa">
+                <button class="button button-primary" type="button" data-new-request>Novo pedido</button>
+                <div class="day-switch" aria-label="Selecionar dia"><button type="button" aria-label="Dia anterior" data-day="prev">‹</button><strong>13 out · terça</strong><button type="button" aria-label="Próximo dia" data-day="next">›</button></div>
+              </div>
+            </div>
+            <div class="stats" aria-label="Resumo do dia">
+              <div class="stat"><span>Pedidos pendentes</span><strong data-pending-count>02</strong></div>
+              <div class="stat"><span>Confirmados</span><strong data-confirmed-count>08</strong></div>
+              <div class="stat"><span>Próxima chegada</span><strong>08:30</strong></div>
+            </div>
+            <section aria-labelledby="clear-list-title">
+              <h3 class="section-heading" id="clear-list-title">Solicitações de horário <span class="count" data-pending-badge>2</span></h3>
+              <div class="queue" data-list>
+                <article class="request" data-status="Pendente" data-search-text="Mariana Costa Chevrolet Onix RKU4H28 revisão ruído freio">
+                  <div class="request-top"><span class="time">Pedido para 09:30</span><span class="status status-pending">Pendente de confirmação</span></div>
+                  <h4>Mariana Costa</h4><p class="vehicle">Veículo: Chevrolet Onix · Placa RKU4H28</p>
+                  <p class="complaint"><strong>Serviço ou queixa:</strong> Revisão e ruído ao frear.</p>
+                  <div class="request-actions"><button class="button button-primary" type="button" data-confirm>Confirmar este horário</button><button class="button" type="button" data-suggest>Propor outro horário</button></div>
+                </article>
+                <article class="request" data-status="Pendente" data-search-text="Paulo Nunes Fiat Argo SJV8A11 troca de óleo filtro">
+                  <div class="request-top"><span class="time">Pedido para 11:00</span><span class="status status-pending">Pendente de confirmação</span></div>
+                  <h4>Paulo Nunes</h4><p class="vehicle">Veículo: Fiat Argo · Placa SJV8A11</p>
+                  <p class="complaint"><strong>Serviço ou queixa:</strong> Troca de óleo e filtro.</p>
+                  <div class="request-actions"><button class="button button-primary" type="button" data-confirm>Confirmar este horário</button><button class="button" type="button" data-suggest>Propor outro horário</button></div>
+                </article>
+              </div>
+            </section>
+            <p class="section-caption">O cliente ainda não recebeu uma confirmação. A equipe fará contato manual pelo WhatsApp.</p>
+          </div>
+        </div>
+        <div class="prototype-caption"><strong>Direção acessível</strong><span>Lista cronológica, linguagem explícita, botões amplos, contraste reforçado e status legível sem depender da cor. Pensada para teclado e telas estreitas.</span></div>
+      </section>
+
+      <section class="prototype prototype-board" id="proto-quadro" role="tabpanel" aria-labelledby="tab-quadro" tabindex="0" hidden>
+        <div class="workspace">
+          <aside class="sidebar" aria-label="Navegação principal">
+            <nav class="side-nav">
+              <a href="#quadro" aria-current="page" aria-label="Agenda"><span class="nav-glyph" aria-hidden="true">01</span>Agenda</a>
+              <a href="#atendimentos" aria-label="Atendimentos"><span class="nav-glyph" aria-hidden="true">02</span>Atendimentos</a>
+              <a href="#pecas" aria-label="Peças e vendas"><span class="nav-glyph" aria-hidden="true">03</span>Peças e vendas</a>
+              <a href="#clientes" aria-label="Clientes"><span class="nav-glyph" aria-hidden="true">04</span>Clientes</a>
+            </nav>
+          </aside>
+          <div class="content">
+            <div class="content-top">
+              <div class="page-title"><p>ROTA 27 / TERÇA, 13 OUTUBRO</p><h2>Chegadas de hoje<span style="color:var(--coral)">.</span></h2></div>
+              <div class="toolbar">
+                <label class="sr-only" for="search-quadro">Buscar por cliente, placa ou serviço</label>
+                <input class="search" id="search-quadro" data-search type="search" placeholder="Buscar na agenda">
+                <button class="button button-primary" type="button" data-new-request>Adicionar pedido</button>
+                <div class="day-switch" aria-label="Selecionar dia"><button type="button" aria-label="Dia anterior" data-day="prev">‹</button><strong>13 out · terça</strong><button type="button" aria-label="Próximo dia" data-day="next">›</button></div>
+              </div>
+            </div>
+            <div class="stats" aria-label="Resumo do dia">
+              <div class="stat"><span>Na fila de confirmação</span><strong>02</strong></div>
+              <div class="stat"><span>Chegadas acertadas</span><strong data-confirmed-count>08</strong></div>
+              <div class="stat"><span>Próxima entrada</span><strong>08:30</strong></div>
+            </div>
+            <div class="board-layout">
+              <section aria-labelledby="arrival-title">
+                <h3 class="section-heading" id="arrival-title">Linha do dia <span class="count">10</span></h3>
+                <div class="arrival-board" data-list>
+                  <div class="arrival-time">08:30</div><article class="arrival-slot confirmed-slot" data-search-text="Marcos Azevedo Toyota Corolla confirmado"><div class="slot-line"><strong>Marcos Azevedo</strong><span class="status status-confirmed">Confirmado</span></div><p class="slot-meta">Toyota Corolla · Chegada confirmada</p></article>
+                  <div class="arrival-time">09:30</div><article class="arrival-slot pending-slot" data-search-text="Mariana Costa Chevrolet Onix RKU4H28 revisão freio"><div class="slot-line"><strong>Mariana Costa</strong><span class="status status-pending">Aguardando oficina</span></div><p class="slot-meta">Chevrolet Onix · RKU4H28 · Revisão e ruído ao frear</p><button class="button button-primary" type="button" data-confirm>Confirmar horário</button> <button class="button" type="button" data-suggest>Sugerir outro</button></article>
+                  <div class="arrival-time">11:00</div><article class="arrival-slot pending-slot" data-search-text="Paulo Nunes Fiat Argo SJV8A11 troca óleo filtro"><div class="slot-line"><strong>Paulo Nunes</strong><span class="status status-pending">Aguardando oficina</span></div><p class="slot-meta">Fiat Argo · SJV8A11 · Troca de óleo e filtro</p><button class="button button-primary" type="button" data-confirm>Confirmar horário</button> <button class="button" type="button" data-suggest>Sugerir outro</button></article>
+                  <div class="arrival-time">13:00</div><article class="arrival-slot confirmed-slot" data-search-text="Joana Ribeiro VW Polo confirmado"><div class="slot-line"><strong>Joana Ribeiro</strong><span class="status status-confirmed">Confirmado</span></div><p class="slot-meta">VW Polo · Chegada confirmada</p></article>
+                  <div class="arrival-time">15:30</div><article class="arrival-slot confirmed-slot" data-search-text="Rafael Souza Honda Fit confirmado"><div class="slot-line"><strong>Rafael Souza</strong><span class="status status-confirmed">Confirmado</span></div><p class="slot-meta">Honda Fit · Chegada confirmada</p></article>
+                </div>
+              </section>
+              <aside class="visual-note" aria-label="Identidade visual da oficina">
+                <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=700&q=82" alt="Motor de um veículo em avaliação numa oficina" loading="lazy">
+                <div class="visual-copy"><span>Recepção · 13 out</span><h3>Primeiro, ouvir.</h3><p>O relato do cliente acompanha o veículo até a avaliação técnica.</p><button class="button" type="button" data-new-request>Novo pedido de horário</button></div>
+              </aside>
+            </div>
+            <p class="section-caption">A linha mostra os horários solicitados para chegada e avaliação, não a duração do reparo.</p>
+          </div>
+        </div>
+        <div class="prototype-caption"><strong>Direção visual</strong><span>Régua horária, contraste de materiais e uma imagem automotiva contida dão identidade de recepção sem esconder o status nem os comandos.</span></div>
+      </section>
+    </main>
+    <p class="demo-disclaimer">Protótipo demonstrativo: informações fictícias; nenhuma ação envia mensagens ou salva dados em um sistema real.</p>
+  </div>
+
+  <dialog id="request-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-head"><div><h2 id="dialog-title">Novo pedido de horário</h2><p>Registre uma solicitação para a oficina confirmar.</p></div><button class="dialog-close" type="button" data-close-dialog aria-label="Fechar">×</button></div>
+    <form class="dialog-form" id="request-form">
+      <div class="field"><label for="customer-name">Nome do cliente</label><input id="customer-name" name="name" required autocomplete="name"></div>
+      <div class="field"><label for="vehicle-info">Marca, modelo e placa</label><input id="vehicle-info" name="vehicle" required placeholder="Ex.: Chevrolet Onix · RKU4H28"></div>
+      <div class="field"><label for="service-info">Serviço desejado ou queixa</label><textarea id="service-info" name="service" required placeholder="O cliente pode descrever qualquer serviço"></textarea></div>
+      <div class="field"><label for="requested-time">Horário solicitado</label><input id="requested-time" name="time" type="datetime-local" required></div>
+      <div class="dialog-actions"><button class="button" type="button" data-close-dialog>Cancelar</button><button class="button button-primary" type="submit">Salvar pedido</button></div>
+    </form>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script>
+    const tabs = [...document.querySelectorAll('[role="tab"]')];
+    const prototypes = [...document.querySelectorAll('.prototype')];
+    const toast = document.querySelector('#toast');
+    const dialog = document.querySelector('#request-dialog');
+    let toastTimer;
+
+    function announce(message) {
+      toast.textContent = message;
+      toast.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toast.hidden = true; }, 4200);
+    }
+
+    function selectTab(tab, moveFocus = false) {
+      tabs.forEach((item) => {
+        const selected = item === tab;
+        item.setAttribute('aria-selected', String(selected));
+        item.tabIndex = selected ? 0 : -1;
+      });
+      prototypes.forEach((panel) => { panel.hidden = panel.id !== tab.getAttribute('aria-controls'); });
+      if (moveFocus) tab.focus();
+    }
+
+    const requestedView = new URLSearchParams(location.search).get('view');
+    const initialTab = requestedView === 'clara' ? document.querySelector('#tab-acessivel') : requestedView === 'quadro' ? document.querySelector('#tab-quadro') : tabs[0];
+    selectTab(initialTab);
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => selectTab(tab));
+      tab.addEventListener('keydown', (event) => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+        event.preventDefault();
+        const nextIndex = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length;
+        selectTab(tabs[nextIndex], true);
+      });
+    });
+
+    document.querySelectorAll('[data-search]').forEach((input) => {
+      input.addEventListener('input', () => {
+        const panel = input.closest('.prototype');
+        const query = input.value.trim().toLocaleLowerCase('pt-BR');
+        panel.querySelectorAll('[data-search-text]').forEach((item) => {
+          item.hidden = !item.dataset.searchText.toLocaleLowerCase('pt-BR').includes(query);
+        });
+      });
+    });
+
+    document.addEventListener('click', (event) => {
+      const confirmButton = event.target.closest('[data-confirm]');
+      if (confirmButton) {
+        const item = confirmButton.closest('.request, .arrival-slot');
+        const panel = confirmButton.closest('.prototype');
+        const status = item.querySelector('.status');
+        status.className = 'status status-confirmed';
+        status.textContent = 'Confirmado';
+        item.dataset.status = 'Confirmado';
+        item.classList.remove('pending-slot');
+        item.classList.add('confirmed-slot');
+        item.querySelectorAll('[data-confirm], [data-suggest]').forEach((button) => { button.remove(); });
+        const remaining = panel.querySelectorAll('.status-pending').length;
+        panel.querySelectorAll('[data-pending-count], [data-pending-badge]').forEach((count) => { count.textContent = String(remaining).padStart(2, '0'); });
+        panel.querySelectorAll('[data-confirmed-count]').forEach((count) => { count.textContent = String(Number(count.textContent) + 1).padStart(2, '0'); });
+        announce('Horário confirmado. Avise o cliente manualmente pelo WhatsApp.');
+        return;
+      }
+      if (event.target.closest('[data-suggest]')) {
+        announce('Registre a sugestão e envie o novo horário manualmente pelo WhatsApp.');
+        return;
+      }
+      if (event.target.closest('[data-new-request]')) {
+        dialog.showModal();
+        document.querySelector('#customer-name').focus();
+        return;
+      }
+      if (event.target.closest('[data-close-dialog]')) dialog.close();
+      if (event.target.closest('[data-day]')) announce('Navegação demonstrativa: a agenda deste exemplo não altera a data.');
+    });
+
+    document.querySelector('#request-form').addEventListener('submit', (event) => {
+      event.preventDefault();
+      dialog.close();
+      event.currentTarget.reset();
+      announce('Pedido de demonstração registrado como pendente.');
+    });
+  </script>
+</body>
+</html>
